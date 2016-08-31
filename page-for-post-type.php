@@ -34,7 +34,7 @@ class Page_For_Post_Type {
 		add_action( 'registered_post_type', array( $this, 'update_post_type' ), 11, 2 );
 
 		// menu classes
-		add_filter( 'wp_nav_menu_objects', array( $this, 'filter_wp_nav_menu_objects' ), 1, 2 );
+		add_filter( 'wp_get_nav_menu_items', array( $this, 'filter_wp_nav_menu_items' ), 1, 2 );
 
 		// customiser
 		add_action( 'customize_register', array( $this, 'action_customize_register' ) );
@@ -254,8 +254,13 @@ class Page_For_Post_Type {
 	 * @param $args
 	 * @return array
 	 */
-	public function filter_wp_nav_menu_objects( $sorted_items, $args ) {
+	public function filter_wp_nav_menu_items( $sorted_items, $args ) {
 		global $wp_query;
+
+		// Bail out on admin pages
+		if ( is_admin() ) {
+			return $sorted_items;
+		}
 
 		$queried_object = get_queried_object();
 
